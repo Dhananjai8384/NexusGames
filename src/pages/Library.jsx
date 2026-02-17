@@ -29,7 +29,6 @@ export default function Library() {
         );
         const purchases = await res.json();
 
-        // Match purchases with games.js
         const matchedGames = purchases
           .map((purchase) => {
             const game = games.find(
@@ -77,16 +76,16 @@ export default function Library() {
     alert(`Launching ${game.title}...`);
   }
 
-  // Not logged in
   if (!user) {
     return (
       <Box sx={{ p: 6 }}>
-        <Typography variant="h5">Please login to view your Library.</Typography>
+        <Typography variant="h5" color="white">
+          Please login to view your Library.
+        </Typography>
       </Box>
     );
   }
 
-  // Loading state
   if (loading) {
     return (
       <Box sx={{ p: 6 }}>
