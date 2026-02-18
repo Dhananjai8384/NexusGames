@@ -1,64 +1,89 @@
-import { AppBar, Toolbar, Typography, Button, Container } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../features/authSlice"; // adjust path if needed
+import { useState } from "react";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
 
-  function handleLogin() {
-    navigate("/Form");
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const open = Boolean(anchorEl);
+
+  function handleProfileClick(event) {
+    setAnchorEl(event.currentTarget);
   }
 
-  function handleHome() {
+  function handleClose() {
+    setAnchorEl(null);
+  }
+
+  function handleLogout() {
+    dispatch(logout());
+    handleClose();
     navigate("/");
-  }
-  function handleLibrary() {
-    if (user) {
-      navigate("/library"); // user logged in
-    } else {
-      navigate("/Form"); // redirect to login
-    }
   }
 
   return (
     <AppBar position="static" sx={{ bgcolor: "#1f1f1f" }}>
-      {/* <Container> */}
-        <Toolbar disableGutters sx={{ px: 3 }}>
-          <Typography
-            variant="h6"
-            onClick={handleHome}
-            sx={{
-              flexGrow: 1,
-              cursor: "pointer",
-              userSelect: "none",
-            }}
-          >
-            NEXUSGames
-          </Typography>
+      <Toolbar sx={{ px: 3 }}>
+        {/* Logo */}
+        <Typography
+          variant="h6"
+          sx={{ cursor: "pointer", flexGrow: 1 }}
+          onClick={() => navigate("/")}
+        >
+          NexusGames
+        </Typography>
 
-          <Button color="inherit">Store</Button>
-          <Button color="inherit" onClick={handleLibrary}>
+        {/* Navigation buttons */}
+        <Box>
+          <Button color="inherit" onClick={() => navigate("/")}>
+            Store
+          </Button>
+
+          <Button color="inherit" onClick={() => navigate("/library")}>
             Library
           </Button>
 
-          {user ? (
+          {!isAuthenticated ? (
             <Button
               variant="contained"
-              sx={{
-                backgroundColor: "primary.main",
-                fontWeight: "bold",
-              }}
+              color="primary"
+              onClick={() => navigate("/form")}
+              sx={{ ml: 2 }}
             >
-              Hi, {user.email}
-            </Button>
-          ) : (
-            <Button variant="contained" onClick={handleLogin}>
               Login
             </Button>
+          ) : (
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleProfileClick}
+              >
+                Hi {user.email}
+              </Button>
+
+              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
           )}
-        </Toolbar>
-      {/* </Container> */}
+        </Box>
+      </Toolbar>
     </AppBar>
   );
 }

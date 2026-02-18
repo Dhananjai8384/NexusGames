@@ -22,47 +22,47 @@ export default function Library() {
       return;
     }
 
-    async function fetchPurchases() {
-      try {
-        const res = await fetch(
-          `http://localhost:3001/purchases?userId=${user.id}`,
-        );
-        const purchases = await res.json();
+    try {
+      const purchases = JSON.parse(localStorage.getItem("purchases")) || [];
 
-        const matchedGames = purchases
-          .map((purchase) => {
-            const game = games.find(
-              (g) => Number(g.id) === Number(purchase.gameId),
-            );
+      // Filter only this user's purchases
+      const userPurchases = purchases.filter(
+        (p) => Number(p.userId) === Number(user.id),
+      );
 
-            if (!game) return null;
+      const matchedGames = userPurchases
+        .map((purchase) => {
+          const game = games.find(
+            (g) => Number(g.id) === Number(purchase.gameId),
+          );
 
-            return {
-              ...game,
-              installed: purchase.installed,
-              purchaseId: purchase.id,
-            };
-          })
-          .filter(Boolean);
+          if (!game) return null;
 
-        setLibraryGames(matchedGames);
-      } catch (error) {
-        console.error("Failed to fetch library:", error);
-      } finally {
-        setLoading(false);
-      }
+          return {
+            ...game,
+            installed: purchase.installed,
+            purchaseId: purchase.id,
+          };
+        })
+        .filter(Boolean);
+
+      setLibraryGames(matchedGames);
+    } catch (error) {
+      console.error("Failed to fetch library:", error);
+    } finally {
+      setLoading(false);
     }
-
-    fetchPurchases();
   }, [user]);
 
-  async function handleInstall(game) {
+  function handleInstall(game) {
     try {
-      await fetch(`http://localhost:3001/purchases/${game.purchaseId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ installed: true }),
-      });
+      const purchases = JSON.parse(localStorage.getItem("purchases")) || [];
+
+      const updatedPurchases = purchases.map((p) =>
+        p.id === game.purchaseId ? { ...p, installed: true } : p,
+      );
+
+      localStorage.setItem("purchases", JSON.stringify(updatedPurchases));
 
       setLibraryGames((prev) =>
         prev.map((g) => (g.id === game.id ? { ...g, installed: true } : g)),

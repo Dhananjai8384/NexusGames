@@ -52,17 +52,21 @@ export default function Store() {
       </Box>
 
       <Box sx={{ px: 4, py: 6, color: "#fff" }}>
-        <Typography variant="h5" gutterBottom>
-          Featured Games
-        </Typography>
+        <Container minWidth={false}>
+          <Typography variant="h5" gutterBottom>
+            Featured Games
+          </Typography>
+        </Container>
 
-        <Grid container spacing={4}>
-          {games.map((game) => (
-            <Grid item xs={12} sm={6} md={3} key={game.id}>
-              <GameCard game={game} />
-            </Grid>
-          ))}
-        </Grid>
+        <Container >
+          <Grid container spacing={6}>
+            {games.map((game) => (
+              <Grid item xs={12} sm={6} md={3} key={game.id}>
+                <GameCard game={game} />
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
       </Box>
     </>
   );

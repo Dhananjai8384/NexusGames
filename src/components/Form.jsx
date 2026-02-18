@@ -36,35 +36,36 @@ export default function Form() {
     dispatch(loginStart());
 
     try {
-      const response = await fetch(
-        `http://localhost:3001/users?email=${formData.email}`,
-      );
+      // Get users from localStorage
+      const users = JSON.parse(localStorage.getItem("users")) || [];
 
-      const data = await response.json();
+      // Find user by email
+      const user = users.find((u) => u.email === formData.email);
 
-      // User not found
-      if (data.length === 0) {
+      if (!user) {
         dispatch(loginFailure("User not found"));
         return;
       }
 
-      const user = data[0];
-
-      // Pass check
+      // Password check
       if (user.password === formData.password) {
-        dispatch(
-          loginSuccess({
-            id: user.id,
-            email: user.email,
-          }),
-        );
+        const loggedInUser = {
+          id: user.id,
+          email: user.email,
+        };
+
+        // Update Redux
+        dispatch(loginSuccess(loggedInUser));
+
+        // Save session so user stays logged in after refresh
+        localStorage.setItem("user", JSON.stringify(loggedInUser));
 
         navigate("/");
       } else {
         dispatch(loginFailure("Invalid password"));
       }
     } catch (err) {
-      dispatch(loginFailure("Server error"));
+      dispatch(loginFailure("Local storage error"));
     }
   }
 

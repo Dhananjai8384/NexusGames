@@ -30,10 +30,10 @@ export default function GameCard({ game }) {
       {/* Image or Placeholder */}
       <CardMedia
         component="img"
-        height="100"
+        height="180"
         image={game.image}
         alt={game.title}
-        width="100"
+        
       />
 
       <CardContent>

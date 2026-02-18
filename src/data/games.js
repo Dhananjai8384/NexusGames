@@ -4,6 +4,9 @@ import Img3 from "../assets/wukong.jpg";
 import Img4 from "../assets/nite.png";
 import Img5 from "../assets/gtav.avif";
 import Img6 from "../assets/mine.webp";
+import Img7 from "../assets/images.jfif";
+import Img8 from "../assets/Tekken.jfif";
+
 const games = [
   {
     id: 1,
@@ -41,16 +44,18 @@ const games = [
     price: "₹899",
     image: Img6,
   },
-  // {
-  //   id: 7,
-  //   title: "Zombie Outbreak",
-  //   price: "₹1,199",
-  // },
-  // {
-  //   id: 8,
-  //   title: "Sky Realms",
-  //   price: "₹2,199",
-  // },
+  {
+    id: 7,
+    title: "BattleField 6",
+    price: "₹3,999",
+    image: Img7,
+  },
+  {
+    id: 8,
+    title: "Tekken 7",
+    price: "₹2,199",
+    image: Img8,
+  },
 ];
 
 export default games;
